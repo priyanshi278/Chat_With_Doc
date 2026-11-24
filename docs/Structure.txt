@@ -1,0 +1,171 @@
+For your **Chat with Any Document (RAG-based application)**, I recommend using a modular GitHub repository structure that separates the three main departments:
+
+1. Backend
+2. Frontend
+3. AI / RAG
+
+# **2. Complete folder structure**
+
+Here is the copyable version for your repository:
+
+```
+
+chat-with-any-document/
+│
+├── backend/
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── upload.py
+│   │   ├── chat.py
+│   │   └── history.py
+│   │
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── request_models.py
+│   │   └── response_models.py
+│   │
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── upload_service.py
+│   │   └── chat_service.py
+│   │
+│   ├── config/
+│   │   ├── __init__.py
+│   │   └── settings.py
+│   │
+│   ├── tests/
+│   │   ├── test_upload.py
+│   │   └── test_chat.py
+│   │
+│   ├── uploads/
+│   ├── main.py
+│   └── requirements.txt
+│
+├── ai/
+│   ├── pdf_processing/
+│   │   ├── extractor.py
+│   │   └── chunker.py
+│   │
+│   ├── embeddings/
+│   │   └── embedding_model.py
+│   │
+│   ├── vector_store/
+│   │   ├── chroma_client.py
+│   │   └── retriever.py
+│   │
+│   ├── llm/
+│   │   ├── gemini_client.py
+│   │   └── prompt.py
+│   │
+│   ├── rag/
+│   │   └── pipeline.py
+│   │
+│   └── tests/
+│       ├── test_extraction.py
+│       └── test_retrieval.py
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Upload/
+│   │   │   └── Chat/
+│   │   │
+│   │   ├── pages/
+│   │   ├── services/
+│   │   │   └── api.js
+│   │   ├── hooks/
+│   │   ├── styles/
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   │
+│   ├── public/
+│   ├── package.json
+│   └── .env.example
+│
+├── docs/
+│   ├── architecture.md
+│   ├── api_documentation.md
+│   ├── setup_guide.md
+│   └── meeting_notes.md
+│
+│
+├── .gitignore
+├── .env.example
+└── README.md
+
+```
+
+This is the proposed target structure. You do not need to create every file on day one.
+
+# **3. What each department will contain**
+
+## **A. Backend**
+
+| File                         | Responsibility                                |
+| ---------------------------- | --------------------------------------------- |
+| `main.py`                    | Starts FastAPI and registers routes           |
+| `routes/upload.py`           | PDF upload endpoint                           |
+| `routes/chat.py`             | Chat endpoint                                 |
+| `routes/history.py`          | Chat history endpoint, if included            |
+| `models/request_models.py`   | Validates incoming requests                   |
+| `models/response_models.py`  | Defines API responses                         |
+| `services/upload_service.py` | Coordinates document upload                   |
+| `services/chat_service.py`   | Connects chat API to RAG                      |
+| `config/settings.py`         | Reads configuration and environment variables |
+
+For example, the `/chat` endpoint will receive:
+
+```
+{
+  "document_id": "abc123",
+  "question": "Explain supervised learning"
+}
+```
+
+It will call the AI/RAG pipeline and return the answer and sources.
+
+## **B. AI/RAG**
+
+This is the most important processing pipeline.
+
+| File                 | Responsibility                               |
+| -------------------- | -------------------------------------------- |
+| `extractor.py`       | Extracts text and page numbers using PyMuPDF |
+| `chunker.py`         | Splits extracted text into chunks            |
+| `embedding_model.py` | Generates vector embeddings                  |
+| `chroma_client.py`   | Stores and manages vectors                   |
+| `retriever.py`       | Finds relevant document chunks               |
+| `gemini_client.py`   | Communicates with Gemini                     |
+| `prompt.py`          | Builds prompts for Gemini                    |
+| `pipeline.py`        | Connects retrieval and generation into RAG   |
+
+The flow will be:
+
+**PDF document**
+
+`extractor.py` — Extract text
+
+`chunker.py` — Split text
+
+`embedding_model.py` — Generate vectors
+
+`chroma_client.py` — Store vectors
+
+**User question → retriever.py → Gemini → Answer + page references**
+
+## **C. Frontend**
+
+| File                 | Responsibility          |
+| -------------------- | ----------------------- |
+| `App.jsx`            | Main application        |
+| `components/Upload/` | PDF upload interface    |
+| `components/Chat/`   | Chat interface          |
+| `pages/`             | Application screens     |
+| `services/api.js`    | Calls FastAPI endpoints |
+| `hooks/`             | Reusable frontend logic |
+| `styles/`            | CSS and styling         |
+
+Since the frontend is vibe-coded, you can generate the UI with an AI coding tool, but keep the API communication and component responsibilities organized.
+
+
+```
